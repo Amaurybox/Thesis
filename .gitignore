@@ -1,0 +1,9 @@
+# Logs
+npm-debug.log*
+yarn-error.log
+
+# Dependency directory
+node_modules
+
+.git
+.DS_Store
