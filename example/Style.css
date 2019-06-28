@@ -1,6 +1,15 @@
 
+.title{
+    font-family: nunito;
+    text-align: center;
+    color: rgb(0, 86, 129);
+    padding-top: 2%;
+    margin-right: 10%;
+}
+
+
 .form-style-6{
-    font: 95% Arial, Helvetica, sans-serif;
+    font: 95% nunito;
     max-width: 400px;
     margin: 10px auto;
     padding: 16px;
@@ -8,7 +17,7 @@
 }
 
 .form-style-6 h1{
-    background: #43D1AF;
+    background: rgb(0, 86, 129);
     padding: 20px 0;
     font-size: 140%;
     font-weight: 300;
@@ -41,7 +50,7 @@
     border: 1px solid #ccc;
     padding: 3%;
     color: #555;
-    font: 95% Arial, Helvetica, sans-serif;
+    font: 95% nunito;
 }
 .form-style-6 input[type="text"]:focus,
 .form-style-6 input[type="date"]:focus,
@@ -54,9 +63,9 @@
 .form-style-6 textarea:focus,
 .form-style-6 select:focus
 {
-    box-shadow: 0 0 5px #43D1AF;
+    box-shadow: 0 0 5px rgb(0, 86, 129);
     padding: 3%;
-    border: 1px solid #43D1AF;
+    border: 1px solid rgb(0, 86, 129);
 }
 
 .form-style-6 input[type="submit"],
@@ -66,8 +75,8 @@
     -moz-box-sizing: border-box;
     width: 100%;
     padding: 3%;
-    background: #43D1AF;
-    border-bottom: 2px solid #30C29E;
+    background: rgb(0, 86, 129);
+    border-bottom: 2px solid rgb(0, 86, 129);
     border-top-style: none;
     border-right-style: none;
     border-left-style: none;
@@ -75,5 +84,54 @@
 }
 .form-style-6 input[type="submit"]:hover,
 .form-style-6 input[type="button"]:hover{
-    background: #2EBC99;
+    background: rgb(0, 86, 129);
+}
+
+{box-sizing: border-box;}
+
+body {
+    margin: 0;
+    font-family: nunito;
+}
+
+.header {
+    overflow: hidden;
+    background-color: ghostwhite;
+    padding: 0px 0px;
+}
+
+.header a {
+    float: left;
+    color: black;
+    text-align: center;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 18px;
+    line-height: 25px;
+    border-radius: 4px;
+}
+
+.header a.logo {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* Create two equal columns that floats next to each other */
+.column {
+    float: left;
+    width: 50%;
+    padding: 10px;
+    height: 100%;
+    overflow: auto;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
 }

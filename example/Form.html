@@ -4,27 +4,49 @@
     <meta charset="UTF-8">
     <title>Tangle project</title>
     <link rel="stylesheet" href="Style.css">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Nunito" />
+    <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/pretty-print-json@0.1/dist/pretty-print-json.css>
+    <script src=https://cdn.jsdelivr.net/npm/pretty-print-json@0.1/dist/pretty-print-json.min.js></script>
 </head>
 <body>
 
-<div class="form-style-6">
-    <h1>Retrieve Data</h1>
-    <form method="POST" action="new.cgi" onsubmit="test()">
-        <input type="text" name="field1" placeholder="Root" />
-        <input type="text" name="field2" placeholder="Provider" />
-        <input type="text" name="field3" placeholder="Mode"/>
-        <input type="submit" value="Fetch" />
-    </form>
+<div class="header">
+    <a  class="logo"><img src="Cranfield-Logo.png" alt="Cranfield Logo" width="100px" height="100px"></a>
+    <h1 class="title"> MAM Explorer </h1>
 </div>
-<div id="output">
-    <script src="../lib/mam.web.min.js"></script>
-    <script>
+
+<div class="row">
+    <div class="column" style="background-color: white;">
+        <div class="form-style-6">
+            <h1>Retrieve Data</h1>
+            <form id='form'>
+                <input type="text" name='field1' placeholder="Root" />
+                <input type="text" name='field2' placeholder="Provider" value="https://nodes.devnet.iota.org" />
+                <select name="field4"  >
+                    <option value="public">Public</option>
+                    <option value="restricted">Restricted</option>
+                    <option value="private">Private</option>
+                </select>
+                <input type="text" name='field3' placeholder="Side Key"/>
+                <input type='submit' value="Fetch"  formaction="javascript: test()"/>
+            </form>
+        </div>
+    </div>
+    <div class="column">
+        <pre id="output"></pre>
+    </div>
+</div>
+
+
+<script src="../lib/mam.web.min.js"></script>
+<script>
+
         const TRYTE_ALPHABET = '9ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
         const asciiToTrytes = (input) => {
             let trytes = '';
             for (let i = 0; i < input.length; i++) {
-                var dec = input[i].charCodeAt(0);
+                const dec = input[i].charCodeAt(0);
                 trytes += TRYTE_ALPHABET[dec % 27];
                 trytes += TRYTE_ALPHABET[(dec - dec % 27) / 27];
             }
@@ -39,63 +61,31 @@
             return ascii;
         };
 
-        (async function () {
-            const mode = 'public'
-            const provider = 'https://nodes.devnet.iota.org'
-
+        async function test () {
+            //const rooti = document.getElementsByName("field1").value;
+            //const mamSecret = 'DONTSHARETHIS'
+            const mode = 'public';
+            const provider = 'https://nodes.devnet.iota.org';
             const mamExplorerLink = `https://mam-explorer.firebaseapp.com/?provider=${encodeURIComponent(provider)}&mode=${mode}&root=`
-
             const outputHtml = document.querySelector("#output");
 
             // Initialise MAM State
             let mamState = Mam.init(provider)
 
-            // Publish to tangle
-            const publish = async packet => {
-                // Create MAM Payload - STRING OF TRYTES
-                const trytes = asciiToTrytes(JSON.stringify(packet))
-                const message = Mam.create(mamState, trytes)
+            const root = document.getElementsByName("field1")[0].value;
+            const result = await Mam.fetch(root,mode);
 
-                // Save new mamState
-                mamState = message.state
-
-                // Attach the payload
-                await Mam.attach(message.payload, message.address, 3, 9)
-
-                outputHtml.innerHTML += `Published: ${packet}<br/>`;
-                return message.root
-            }
-
-            const publishAll = async () => {
-                const root = await publish('cc')
-
-                await publish('BOB')
-
-                await publish('CHARLIE')
-
-                return root
-            }
-
-            // Callback used to pass data out of the fetch
-            //const logData = data => outputHtml.innerHTML += `Fetched and parsed ${JSON.parse(trytesToAscii(data))}<br/>`;
-
-            //const root = await publishAll();
-            const root= "CI9UNGEJPMOJGVICBMLXYBFYXAVANNTQ9O9JRBLRWIBF9NTENWTHXHHMI9FPVLYDUJKOJCCKWXCEJUXO9" ;
-
-            // Output asyncronously using "logData" callback function
-            //await Mam.fetch(root, mode, null, logData)
-
-            // Output syncronously once fetch is completed
-            const result = await Mam.fetch(root, mode)
             result.messages.forEach(message => {
-                    outputHtml.innerHTML += `Fetched and parsed ${JSON.parse(trytesToAscii(message))}<br/>`
+                const info= JSON.parse(trytesToAscii(message));
+                outputHtml.innerHTML+= JSON.stringify(info,null,6)+'<br/>';
             });
 
-                outputHtml.innerHTML += `Verify with MAM Explorer:<br/><a target="_blank" href="${mamExplorerLink}${root}">${mamExplorerLink}${root}</a>`;
-            })();
+            outputHtml.innerHTML += `Verify with MAM Explorer:<br/><a target="_blank" href="${mamExplorerLink}${root}">${mamExplorerLink}${root}</a>`;
+        }
 
-    </script>
-</div>
+</script>
+
 
 </body>
 </html>
+
