@@ -86,33 +86,38 @@
         };
 
         async function test () {
-            //const rooti = document.getElementsByName("field1").value;
             //const mamSecret = 'DONTSHARETHIS'
             const mode = 'public';
             const provider = 'https://nodes.devnet.iota.org';
             const mamExplorerLink = `https://mam-explorer.firebaseapp.com/?provider=${encodeURIComponent(provider)}&mode=${mode}&root=`
             const outputHtml = document.querySelector("#output");
+            const root = document.getElementsByName("field1")[0].value;
+            const startdataretreival=true;
 
             // Initialise MAM State
-            let mamState = Mam.init(provider)
+            let mamState = Mam.init(provider,root,null);
+            const next = data => outputHtml.innerHTML += 'Fetched' + syntaxHighlight(JSON.stringify(JSON.parse(trytesToAscii(data)), null, 6)) + '<br/>';
 
-            const root = document.getElementsByName("field1")[0].value;
-            const result = await Mam.fetch(root,mode);
+            const executedataretreival = async function(seed) {
+                //let result = await Mam.fetch(seed, mode, null, next);
+                let result = await Mam.fetch(seed, mode, null,next);
+                    if (startdataretreival) {
+                        let nr= result.nextRoot;
+                        executedataretreival(nr);
+                        //outputHtml.innerHTML += nr + '<br/>';
+                    }
+            };
+            executedataretreival(root);
 
-            result.messages.forEach(message => {
-                const info= JSON.parse(trytesToAscii(message));
-                outputHtml.innerHTML+= syntaxHighlight(JSON.stringify(info,null,6))+'<br/>';
+            //result.messages.forEach(message => {
+            //    const info= JSON.parse(trytesToAscii(message));
+            //    outputHtml.innerHTML+= syntaxHighlight(JSON.stringify(info,null,6))+'<br/>';
                 //outputHtml.innerHTML+= JSON.stringify(info,null,6)+'<br/>';
-            });
-
-
+            //});
             //outputHtml.innerHTML += `Verify with MAM Explorer:<br/><a target="_blank" href="${mamExplorerLink}${root}">${mamExplorerLink}${root}</a>`;
 
         }
-
 </script>
-
-
 </body>
 </html>
 
